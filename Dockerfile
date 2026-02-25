@@ -14,25 +14,6 @@ ENV ENABLE_AUTH=true
 # 设置时区为中国上海
 ENV TZ=Asia/Shanghai
 
-# 1. 为 APT 配置中国镜像源（DEB822 格式）
-RUN echo "配置 APT 中国镜像源 (Trixie)..." && \
-    # 备份原有源
-    mv /etc/apt/sources.list /etc/apt/sources.list.bak 2>/dev/null || true && \
-    # 创建新的 deb822 格式源文件
-    cat > /etc/apt/sources.list.d/debian.sources <<EOF
-Types: deb
-URIs: https://mirrors.tuna.tsinghua.edu.cn/debian
-Suites: trixie trixie-updates
-Components: main contrib non-free non-free-firmware
-Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
-
-Types: deb
-URIs: https://mirrors.tuna.tsinghua.edu.cn/debian-security
-Suites: trixie-security
-Components: main contrib non-free non-free-firmware
-Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
-EOF
-
 # 2. 安装系统依赖
 RUN echo "安装系统依赖..." && \
     apt-get update && \
@@ -47,10 +28,6 @@ RUN echo "安装系统依赖..." && \
     # 清理缓存以减小镜像体积
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-# 3. 为pip配置中国镜像源
-RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
-    pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
 
 # 复制Python依赖文件
 COPY requirements.txt .
