@@ -41,10 +41,6 @@ COPY . .
 # 创建数据目录
 RUN mkdir -p /data /app/backgrounds
 
-# 创建非root用户运行应用
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app /data
-USER appuser
-
 # 暴露端口
 EXPOSE 8080
 
